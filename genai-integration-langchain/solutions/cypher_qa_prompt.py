@@ -10,14 +10,14 @@ from langchain_core.prompts.prompt import PromptTemplate
 # end::import_prompt[]
 
 model = init_chat_model(
-    "gpt-4o",
+    "gpt-5.2", 
     model_provider="openai"
 )
 
 cypher_model = init_chat_model(
-    "gpt-4o-mini",
+    "gpt-5-mini",
     model_provider="openai",
-    temperature=0.0
+    reasoning={"effort": "high"},
 )
 
 graph = Neo4jGraph(
