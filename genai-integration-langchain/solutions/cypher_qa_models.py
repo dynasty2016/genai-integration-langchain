@@ -6,16 +6,13 @@ from langchain_neo4j import Neo4jGraph
 from langchain_neo4j import GraphCypherQAChain
 from langchain.chat_models import init_chat_model
 
-model = init_chat_model(
-    "gpt-4o",
-    model_provider="openai"
-)
+model = init_chat_model("gpt-5.2", model_provider="openai")
 
 # tag::cypher_model[]
 cypher_model = init_chat_model(
-    "gpt-4o",
+    "gpt-5-mini",
     model_provider="openai",
-    temperature=0.0
+    reasoning={"effort": "high"},
 )
 # end::cypher_model[]
 
@@ -38,4 +35,4 @@ cypher_qa = GraphCypherQAChain.from_llm(
 
 question = "Who acted in the movie Aliens?"
 response = cypher_qa.invoke({"query": question})
-print(response)
+print(response["result"])

@@ -11,7 +11,7 @@ from typing_extensions import List, TypedDict
 # graph = 
 
 # Initialize the LLM
-model = init_chat_model("gpt-4o", model_provider="openai")
+model = init_chat_model("gpt-5.2", model_provider="openai")
 
 # Create a prompt
 template = """Use the following pieces of context to answer the question at the end.
