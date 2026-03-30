@@ -7,10 +7,7 @@ from langchain_neo4j import Neo4jGraph
 from langchain_neo4j import GraphCypherQAChain
 
 # Initialize the LLM
-model = init_chat_model(
-    "gpt-4o",
-    model_provider="openai"
-)
+model = init_chat_model("gpt-5.2", model_provider="openai")
 
 # Connect to Neo4j
 graph = Neo4jGraph(
