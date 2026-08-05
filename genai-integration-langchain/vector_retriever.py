@@ -29,21 +29,41 @@ class State(TypedDict):
     context: List[Document]
     answer: str
 
+from langchain_neo4j import Neo4jGraph
+
 # Connect to Neo4j
-# graph = 
+graph = Neo4jGraph(
+    url=os.getenv("NEO4J_URI"),
+    username=os.getenv("NEO4J_USERNAME"),
+    password=os.getenv("NEO4J_PASSWORD"),
+    database=os.getenv("NEO4J_DATABASE"),
+)
+
+from langchain_openai import OpenAIEmbeddings
 
 # Create the embedding model
-# embedding_model = 
+embedding_model = OpenAIEmbeddings(model="text-embedding-ada-002")
+
+from langchain_neo4j import Neo4jVector
 
 # Create Vector
-# plot_vector =
+plot_vector = Neo4jVector.from_existing_index(
+    embedding_model,
+    graph=graph,
+    index_name="moviePlots",
+    embedding_node_property="plotEmbedding",
+    text_node_property="plot",
+)
 
 # Define functions for each step in the application
 
-# Retrieve context 
+# Retrieve context
 def retrieve(state: State):
     # Use the vector to find relevant documents
-    context = [Document("Nothing to see here")]
+    context = plot_vector.similarity_search(
+        state["question"],
+        k=6
+    )
     return {"context": context}
 
 # Generate the answer based on the question and context
@@ -58,6 +78,8 @@ workflow.add_edge(START, "retrieve")
 app = workflow.compile()
 
 # Run the application
-question = "What is the movie with the pig who wants to be a sheep dog?"
+print("Ask your question here:")
+question = input()
 response = app.invoke({"question": question})
 print("Answer:", response["answer"])
+print("Context:", response["context"])
