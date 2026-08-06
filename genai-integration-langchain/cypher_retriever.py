@@ -38,16 +38,24 @@ graph = Neo4jGraph(
     database=os.getenv("NEO4J_DATABASE"),
 )
 
+from langchain_neo4j import GraphCypherQAChain
+
 # Create the Cypher QA chain
-# cypher_qa =
+cypher_qa = GraphCypherQAChain.from_llm(
+    graph=graph,
+    llm=model,
+    allow_dangerous_requests=True,
+    return_direct=True,
+    verbose=True,
+)
 
 # Define functions for each step in the application
 
 # Retrieve context
 def retrieve(state: State):
-    context = [
-        {"data": "None"}
-    ]
+    context = cypher_qa.invoke(
+        {"query": state["question"]}
+    )
     return {"context": context}
 
 # Generate the answer based on the question and context
@@ -62,7 +70,7 @@ workflow.add_edge(START, "retrieve")
 app = workflow.compile()
 
 # Run the application
-question = "What movies has Tom Hanks acted in?"
+question = input("Enter your question: ")
 response = app.invoke({"question": question})
 print("Answer:", response["answer"])
 print("Context:", response["context"])
